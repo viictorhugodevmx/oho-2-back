@@ -1,0 +1,32 @@
+# Dependencies
+node_modules/
+
+# Build
+dist/
+build/
+
+# Tests
+coverage/
+
+# Environment
+.env
+.env.*
+!.env.example
+
+# Logs
+*.log
+logs/
+
+# Runtime
+*.pid
+*.pid.lock
+
+# Editors
+.vscode/
+.idea/
+
+# Operating system
+.DS_Store
+
+# TypeScript
+*.tsbuildinfo

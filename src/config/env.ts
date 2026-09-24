@@ -7,6 +7,7 @@ const environmentSchema = z.object({
     .enum(["development", "test", "production"])
     .default("development"),
   PORT: z.coerce.number().int().positive().default(4000),
+  MONGODB_URI: z.string().min(1),
   FRONTEND_URL: z.string().url(),
   LOG_LEVEL: z
     .enum(["fatal", "error", "warn", "info", "debug", "trace", "silent"])

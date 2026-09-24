@@ -33,14 +33,14 @@ Todavía no contiene código ejecutable ni dependencias instaladas.
 
 ## Servicios locales
 
-| Servicio | Dirección |
-| --- | --- |
-| Frontend | http://localhost:3000 |
-| Backend | http://localhost:4000 |
-| API | http://localhost:4000/api/v1 |
-| MongoDB | mongodb://127.0.0.1:27017/oho_2_local |
-| Mailpit | http://localhost:8025 |
-| SMTP | localhost:1025 |
+| Servicio | Dirección                             |
+| -------- | ------------------------------------- |
+| Frontend | http://localhost:3000                 |
+| Backend  | http://localhost:4000                 |
+| API      | http://localhost:4000/api/v1          |
+| MongoDB  | mongodb://127.0.0.1:27017/oho_2_local |
+| Mailpit  | http://localhost:8025                 |
+| SMTP     | localhost:1025                        |
 
 ## Requisitos
 

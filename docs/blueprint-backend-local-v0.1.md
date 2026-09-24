@@ -44,15 +44,15 @@ despliegue independientes.
 
 ## 4. Servicios locales
 
-| Servicio | Dirección o puerto |
-| --- | --- |
-| Frontend | http://localhost:3000 |
-| Backend | http://localhost:4000 |
-| API | http://localhost:4000/api/v1 |
-| MongoDB | mongodb://127.0.0.1:27017 |
-| Base de datos | oho_2_local |
-| Mailpit SMTP | localhost:1025 |
-| Mailpit UI | http://localhost:8025 |
+| Servicio      | Dirección o puerto           |
+| ------------- | ---------------------------- |
+| Frontend      | http://localhost:3000        |
+| Backend       | http://localhost:4000        |
+| API           | http://localhost:4000/api/v1 |
+| MongoDB       | mongodb://127.0.0.1:27017    |
+| Base de datos | oho_2_local                  |
+| Mailpit SMTP  | localhost:1025               |
+| Mailpit UI    | http://localhost:8025        |
 
 MongoDB se ejecuta mediante la instalación local existente.
 
@@ -518,20 +518,20 @@ Incluye:
 
 ## 20. Plan de construcción
 
-| Paso | Resultado |
-| --- | --- |
-| 0 | Blueprint, decisiones y preparación |
-| 1 | Express, TypeScript y health check |
-| 2 | MongoDB, configuración y modelos |
-| 3 | Seeds y catálogo |
-| 4 | Autenticación y sesiones |
-| 5 | Cotización autoritativa |
-| 6 | Pedidos con cuenta |
-| 7 | Compra invitada y acceso seguro |
-| 8 | Correos locales con Mailpit |
-| 9 | Pago e impresión simulados |
-| 10 | Integración del frontend |
-| 11 | Pruebas críticas y cierre local |
+| Paso | Resultado                           |
+| ---- | ----------------------------------- |
+| 0    | Blueprint, decisiones y preparación |
+| 1    | Express, TypeScript y health check  |
+| 2    | MongoDB, configuración y modelos    |
+| 3    | Seeds y catálogo                    |
+| 4    | Autenticación y sesiones            |
+| 5    | Cotización autoritativa             |
+| 6    | Pedidos con cuenta                  |
+| 7    | Compra invitada y acceso seguro     |
+| 8    | Correos locales con Mailpit         |
+| 9    | Pago e impresión simulados          |
+| 10   | Integración del frontend            |
+| 11   | Pruebas críticas y cierre local     |
 
 ## 21. Criterio de éxito
 

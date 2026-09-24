@@ -1,4 +1,4 @@
-import { Schema, model, models, type Types } from "mongoose";
+import mongoose, { Schema, model, type Types } from "mongoose";
 
 export interface RefreshSession {
   userId: Types.ObjectId;
@@ -68,5 +68,5 @@ refreshSessionSchema.index({
 });
 
 export const RefreshSessionModel =
-  models.RefreshSession ??
+  mongoose.models.RefreshSession ??
   model<RefreshSession>("RefreshSession", refreshSessionSchema);

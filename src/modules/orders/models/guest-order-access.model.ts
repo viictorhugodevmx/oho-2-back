@@ -1,4 +1,4 @@
-import { Schema, model, models, type Types } from "mongoose";
+import mongoose, { Schema, model, type Types } from "mongoose";
 
 export interface GuestOrderAccess {
   orderId: Types.ObjectId;
@@ -61,5 +61,5 @@ guestOrderAccessSchema.index({
 });
 
 export const GuestOrderAccessModel =
-  models.GuestOrderAccess ??
+  mongoose.models.GuestOrderAccess ??
   model<GuestOrderAccess>("GuestOrderAccess", guestOrderAccessSchema);

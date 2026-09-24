@@ -1,4 +1,4 @@
-import { Schema, model, models, type Types } from "mongoose";
+import mongoose, { Schema, model, type Types } from "mongoose";
 import { PRODUCT_FORMATS } from "../../catalog/models/product.model.js";
 
 export type ProductFormat = (typeof PRODUCT_FORMATS)[number];
@@ -361,4 +361,5 @@ orderSchema.index({
   fulfillmentStatus: 1,
 });
 
-export const OrderModel = models.Order ?? model<Order>("Order", orderSchema);
+export const OrderModel =
+  mongoose.models.Order ?? model<Order>("Order", orderSchema);

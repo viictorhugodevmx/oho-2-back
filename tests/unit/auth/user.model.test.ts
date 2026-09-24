@@ -18,7 +18,7 @@ describe("UserModel", () => {
     expect(user.emailVerified).toBe(false);
   });
 
-  it("acepta únicamente los roles definidos", () => {
+  it("acepta únicamente los roles definidos", async () => {
     const user = new UserModel({
       firstName: "Víctor",
       lastName: "Segundo",
@@ -27,12 +27,14 @@ describe("UserModel", () => {
       role: "owner",
     });
 
-    const validationError = user.validateSync();
-
-    expect(validationError?.errors.role).toBeDefined();
+    await expect(user.validate()).rejects.toMatchObject({
+      errors: {
+        role: expect.anything(),
+      },
+    });
   });
 
-  it("rechaza un correo inválido", () => {
+  it("rechaza un correo inválido", async () => {
     const user = new UserModel({
       firstName: "Víctor",
       lastName: "Segundo",
@@ -40,20 +42,24 @@ describe("UserModel", () => {
       passwordHash: "$2b$12$hash-de-prueba",
     });
 
-    const validationError = user.validateSync();
-
-    expect(validationError?.errors.email).toBeDefined();
+    await expect(user.validate()).rejects.toMatchObject({
+      errors: {
+        email: expect.anything(),
+      },
+    });
   });
 
-  it("requiere el hash de la contraseña", () => {
+  it("requiere el hash de la contraseña", async () => {
     const user = new UserModel({
       firstName: "Víctor",
       lastName: "Segundo",
       email: "victor@example.com",
     });
 
-    const validationError = user.validateSync();
-
-    expect(validationError?.errors.passwordHash).toBeDefined();
+    await expect(user.validate()).rejects.toMatchObject({
+      errors: {
+        passwordHash: expect.anything(),
+      },
+    });
   });
 });

@@ -1,4 +1,4 @@
-import { Schema, model, models, type Types } from "mongoose";
+import mongoose, { Schema, model, type Types } from "mongoose";
 
 export const IDEMPOTENCY_OPERATIONS = [
   "create_order",
@@ -115,5 +115,5 @@ idempotencyRecordSchema.index({
 });
 
 export const IdempotencyRecordModel =
-  models.IdempotencyRecord ??
+  mongoose.models.IdempotencyRecord ??
   model<IdempotencyRecord>("IdempotencyRecord", idempotencyRecordSchema);

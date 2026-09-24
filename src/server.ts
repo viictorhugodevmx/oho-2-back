@@ -2,6 +2,7 @@ import type { Server } from "node:http";
 
 import { createApp } from "./app.js";
 import { env } from "./config/env.js";
+import { ensureDatabaseIndexes } from "./database/indexes.js";
 import {
   connectToDatabase,
   disconnectFromDatabase,
@@ -16,6 +17,7 @@ let isShuttingDown = false;
 async function bootstrap(): Promise<void> {
   try {
     await connectToDatabase();
+    await ensureDatabaseIndexes();
 
     server = app.listen(env.PORT, () => {
       logger.info(

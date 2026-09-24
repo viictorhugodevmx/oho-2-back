@@ -57,32 +57,36 @@ describe("OrderModel", () => {
     expect(order.userId).toBeNull();
   });
 
-  it("permite una orden de cuenta cuando tiene usuario", () => {
+  it("permite una orden de cuenta cuando tiene usuario", async () => {
     const order = createValidOrder();
 
     order.customerType = "account";
     order.userId = new Types.ObjectId();
 
-    expect(order.validateSync()).toBeUndefined();
+    await expect(order.validate()).resolves.toBeUndefined();
   });
 
-  it("requiere usuario cuando la compra pertenece a una cuenta", () => {
+  it("requiere usuario cuando la compra pertenece a una cuenta", async () => {
     const order = createValidOrder();
 
     order.customerType = "account";
 
-    const validationError = order.validateSync();
-
-    expect(validationError?.errors.userId).toBeDefined();
+    await expect(order.validate()).rejects.toMatchObject({
+      errors: {
+        userId: expect.anything(),
+      },
+    });
   });
 
-  it("rechaza pedidos sin productos", () => {
+  it("rechaza pedidos sin productos", async () => {
     const order = createValidOrder();
 
     order.items.splice(0, order.items.length);
 
-    const validationError = order.validateSync();
-
-    expect(validationError?.errors.items).toBeDefined();
+    await expect(order.validate()).rejects.toMatchObject({
+      errors: {
+        items: expect.anything(),
+      },
+    });
   });
 });

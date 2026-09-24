@@ -1,4 +1,4 @@
-import { Schema, model, models } from "mongoose";
+import mongoose, { Schema, model } from "mongoose";
 
 export const USER_ROLES = ["customer", "admin"] as const;
 
@@ -71,4 +71,5 @@ const userSchema = new Schema<User>(
 
 userSchema.index({ active: 1, role: 1 });
 
-export const UserModel = models.User ?? model<User>("User", userSchema);
+export const UserModel =
+  mongoose.models.User ?? model<User>("User", userSchema);

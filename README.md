@@ -103,3 +103,12 @@ https://oho-2.netlify.app/
 ## Autor
 
 **Víctor Hugo Segundo Aguilar**
+
+## Autenticación
+
+El contrato, las decisiones de seguridad y las pruebas del módulo de
+autenticación están documentados en:
+
+```text
+docs/authentication-v0.1.md
+```

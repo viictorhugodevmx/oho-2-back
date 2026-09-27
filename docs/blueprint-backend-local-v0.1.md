@@ -518,20 +518,21 @@ Incluye:
 
 ## 20. Plan de construcción
 
-| Paso | Resultado                           |
-| ---- | ----------------------------------- |
-| 0    | Blueprint, decisiones y preparación |
-| 1    | Express, TypeScript y health check  |
-| 2    | MongoDB, configuración y modelos    |
-| 3    | Seeds y catálogo                    |
-| 4    | Autenticación y sesiones            |
-| 5    | Cotización autoritativa             |
-| 6    | Pedidos con cuenta                  |
-| 7    | Compra invitada y acceso seguro     |
-| 8    | Correos locales con Mailpit         |
-| 9    | Pago e impresión simulados          |
-| 10   | Integración del frontend            |
-| 11   | Pruebas críticas y cierre local     |
+| Paso | Resultado                               |
+| ---- | --------------------------------------- |
+| 0    | Blueprint, decisiones y preparación     |
+| 1    | Express, TypeScript y health check      |
+| 2    | MongoDB, configuración y modelos        |
+| 3    | Seeds de productos y diseños            |
+| 4    | API del catálogo de productos y diseños |
+| 5    | Autenticación y sesiones                |
+| 6    | Cotización autoritativa                 |
+| 7    | Pedidos con cuenta                      |
+| 8    | Compra invitada y acceso seguro         |
+| 9    | Correos locales con Mailpit             |
+| 10   | Pago e impresión simulados              |
+| 11   | Integración del frontend                |
+| 12   | Pruebas críticas y cierre local         |
 
 ## 21. Criterio de éxito
 

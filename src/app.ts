@@ -1,9 +1,13 @@
+import cookieParser from "cookie-parser";
 import cors from "cors";
-import express from "express";
+import express, { type ErrorRequestHandler } from "express";
 import helmet from "helmet";
 import { pinoHttp } from "pino-http";
 
 import { env } from "./config/env.js";
+import { authRouter } from "./modules/auth/routes/auth.routes.js";
+import { designRouter } from "./modules/catalog/routes/design.routes.js";
+import { productRouter } from "./modules/catalog/routes/product.routes.js";
 import { healthRouter } from "./modules/health/health.routes.js";
 import { logger } from "./shared/logger/logger.js";
 
@@ -28,8 +32,12 @@ export function createApp() {
   );
 
   app.use(express.json({ limit: "1mb" }));
+  app.use(cookieParser());
 
   app.use("/api/v1/health", healthRouter);
+  app.use("/api/v1/products", productRouter);
+  app.use("/api/v1/designs", designRouter);
+  app.use("/api/v1/auth", authRouter);
 
   app.use((request, response) => {
     response.status(404).json({
@@ -40,6 +48,37 @@ export function createApp() {
       },
     });
   });
+
+  const errorHandler: ErrorRequestHandler = (
+    error,
+    request,
+    response,
+    next,
+  ) => {
+    logger.error(
+      {
+        error,
+        method: request.method,
+        path: request.originalUrl,
+      },
+      "Unhandled request error",
+    );
+
+    if (response.headersSent) {
+      next(error);
+      return;
+    }
+
+    response.status(500).json({
+      error: {
+        code: "INTERNAL_SERVER_ERROR",
+        message: "An unexpected error occurred.",
+        details: [],
+      },
+    });
+  };
+
+  app.use(errorHandler);
 
   return app;
 }

@@ -17,7 +17,7 @@ const guestOrderAccessSchema = new Schema<GuestOrderAccess>(
       type: Schema.Types.ObjectId,
       ref: "Order",
       required: true,
-      index: true,
+      unique: true,
     },
     tokenHash: {
       type: String,

@@ -26,6 +26,13 @@ const environmentSchema = z.object({
     .max(90)
     .default(30),
   AUTH_REFRESH_COOKIE_NAME: z.string().min(1).default("oho_refresh_token"),
+  GUEST_ORDER_TOKEN_SECRET: z.string().min(32),
+  GUEST_ORDER_ACCESS_TTL_DAYS: z.coerce
+    .number()
+    .int()
+    .min(1)
+    .max(365)
+    .default(30),
 });
 
 const result = environmentSchema.safeParse(process.env);

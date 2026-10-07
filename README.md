@@ -11,7 +11,7 @@ cotizaciones autoritativas y pedidos almacenados en MongoDB.
 Etapa actual:
 
 ```text
-Pasos 0–7 completados.
+Pasos 0–8 completados.
 ```
 
 Actualmente están implementados:
@@ -182,4 +182,13 @@ usuarios autenticados están documentados en:
 
 ```text
 docs/account-orders-v0.1.md
+```
+
+## Compra invitada y acceso seguro
+
+El contrato, la idempotencia y las reglas de seguridad para pedidos
+invitados están documentados en:
+
+```text
+docs/guest-orders-v0.1.md
 ```

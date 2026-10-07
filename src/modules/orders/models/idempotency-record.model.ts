@@ -2,8 +2,7 @@ import mongoose, { Schema, model, type Model, type Types } from "mongoose";
 
 export const IDEMPOTENCY_OPERATIONS = [
   "create_order",
-  "create_payment",
-  "submit_fulfillment",
+  "create_guest_order",
 ] as const;
 
 export const IDEMPOTENCY_STATUSES = [

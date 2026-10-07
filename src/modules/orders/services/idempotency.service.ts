@@ -2,8 +2,9 @@ import { createHash } from "node:crypto";
 
 import type { Types } from "mongoose";
 
-import type { CreateOrderBody } from "../schemas/order.schemas.js";
+import type { IdempotencyOperation } from "../models/idempotency-record.model.js";
 import { idempotencyRepository } from "../repositories/idempotency.repository.js";
+import type { CreateOrderBody } from "../schemas/order.schemas.js";
 
 const IDEMPOTENCY_TTL_HOURS = 24;
 
@@ -23,6 +24,18 @@ export class IdempotencyError extends Error {
 interface AccountIdempotencyInput {
   userId: Types.ObjectId;
   key: string;
+  request: CreateOrderBody;
+}
+
+interface GuestIdempotencyInput {
+  guestSessionHash: string;
+  key: string;
+  request: CreateOrderBody;
+}
+
+interface ClaimInput {
+  operation: IdempotencyOperation;
+  keyHash: string;
   request: CreateOrderBody;
 }
 
@@ -66,6 +79,10 @@ function hashAccountKey(userId: Types.ObjectId, key: string): string {
   return hash(`create_order:${userId.toString()}:${key}`);
 }
 
+function hashGuestKey(guestSessionHash: string, key: string): string {
+  return hash(`create_guest_order:${guestSessionHash}:${key}`);
+}
+
 function isDuplicateKeyError(error: unknown): error is { code: number } {
   return (
     typeof error === "object" &&
@@ -75,75 +92,101 @@ function isDuplicateKeyError(error: unknown): error is { code: number } {
   );
 }
 
+async function claim(
+  input: ClaimInput,
+  currentDate: Date,
+): Promise<IdempotencyClaim> {
+  const requestHash = hashRequest(input.request);
+
+  const expiresAt = new Date(
+    currentDate.getTime() + IDEMPOTENCY_TTL_HOURS * 60 * 60 * 1_000,
+  );
+
+  try {
+    const record = await idempotencyRepository.createProcessing({
+      operation: input.operation,
+      keyHash: input.keyHash,
+      requestHash,
+      lockedAt: currentDate,
+      expiresAt,
+    });
+
+    return {
+      status: "acquired",
+      recordId: record._id,
+    };
+  } catch (error) {
+    if (!isDuplicateKeyError(error)) {
+      throw error;
+    }
+  }
+
+  const existingRecord = await idempotencyRepository.findByOperationAndKeyHash(
+    input.operation,
+    input.keyHash,
+  );
+
+  if (!existingRecord) {
+    throw new IdempotencyError(
+      "IDEMPOTENCY_IN_PROGRESS",
+      "El intento idempotente todavía se está procesando.",
+    );
+  }
+
+  if (existingRecord.requestHash !== requestHash) {
+    throw new IdempotencyError(
+      "IDEMPOTENCY_CONFLICT",
+      "La clave de idempotencia ya fue utilizada con otra solicitud.",
+    );
+  }
+
+  if (existingRecord.status === "completed" && existingRecord.orderId) {
+    return {
+      status: "replay",
+      orderId: existingRecord.orderId,
+      responseStatusCode: existingRecord.responseStatusCode ?? 201,
+    };
+  }
+
+  if (existingRecord.status === "processing") {
+    throw new IdempotencyError(
+      "IDEMPOTENCY_IN_PROGRESS",
+      "La creación del pedido todavía se está procesando.",
+    );
+  }
+
+  throw new IdempotencyError(
+    "IDEMPOTENCY_CONFLICT",
+    "El intento anterior falló. Utiliza una nueva clave de idempotencia.",
+  );
+}
+
 export const idempotencyService = {
-  async claimForAccount(
+  claimForAccount(
     input: AccountIdempotencyInput,
     currentDate = new Date(),
   ): Promise<IdempotencyClaim> {
-    const keyHash = hashAccountKey(input.userId, input.key);
-    const requestHash = hashRequest(input.request);
-
-    const expiresAt = new Date(
-      currentDate.getTime() + IDEMPOTENCY_TTL_HOURS * 60 * 60 * 1_000,
-    );
-
-    try {
-      const record = await idempotencyRepository.createProcessing({
+    return claim(
+      {
         operation: "create_order",
-        keyHash,
-        requestHash,
-        lockedAt: currentDate,
-        expiresAt,
-      });
+        keyHash: hashAccountKey(input.userId, input.key),
+        request: input.request,
+      },
+      currentDate,
+    );
+  },
 
-      return {
-        status: "acquired",
-        recordId: record._id,
-      };
-    } catch (error) {
-      if (!isDuplicateKeyError(error)) {
-        throw error;
-      }
-    }
-
-    const existingRecord =
-      await idempotencyRepository.findByOperationAndKeyHash(
-        "create_order",
-        keyHash,
-      );
-
-    if (!existingRecord) {
-      throw new IdempotencyError(
-        "IDEMPOTENCY_IN_PROGRESS",
-        "El intento idempotente todavía se está procesando.",
-      );
-    }
-
-    if (existingRecord.requestHash !== requestHash) {
-      throw new IdempotencyError(
-        "IDEMPOTENCY_CONFLICT",
-        "La clave de idempotencia ya fue utilizada con otra solicitud.",
-      );
-    }
-
-    if (existingRecord.status === "completed" && existingRecord.orderId) {
-      return {
-        status: "replay",
-        orderId: existingRecord.orderId,
-        responseStatusCode: existingRecord.responseStatusCode ?? 201,
-      };
-    }
-
-    if (existingRecord.status === "processing") {
-      throw new IdempotencyError(
-        "IDEMPOTENCY_IN_PROGRESS",
-        "La creación del pedido todavía se está procesando.",
-      );
-    }
-
-    throw new IdempotencyError(
-      "IDEMPOTENCY_CONFLICT",
-      "El intento anterior falló. Utiliza una nueva clave de idempotencia.",
+  claimForGuest(
+    input: GuestIdempotencyInput,
+    currentDate = new Date(),
+  ): Promise<IdempotencyClaim> {
+    return claim(
+      {
+        operation: "create_guest_order",
+        keyHash: hashGuestKey(input.guestSessionHash, input.key),
+        request: input.request,
+      },
+      currentDate,
     );
   },
 

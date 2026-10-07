@@ -396,7 +396,8 @@ GET  /orders/me/:orderNumber
 ### Pedido invitado
 
 ```text
-GET /guest-orders/:orderNumber?token=...
+POST /guest-orders
+GET  /guest-orders/:orderNumber
 ```
 
 ## 14. Contrato de errores

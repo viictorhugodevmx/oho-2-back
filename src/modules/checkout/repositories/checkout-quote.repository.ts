@@ -86,6 +86,14 @@ export const checkoutQuoteRepository = {
     ).exec();
   },
 
+  findForGuest(quoteId: string, guestSessionHash: string) {
+    return CheckoutQuoteModel.findOne({
+      quoteId,
+      customerType: "guest",
+      guestSessionHash,
+    }).exec();
+  },
+
   findActiveForGuest(
     quoteId: string,
     guestSessionHash: string,
@@ -100,5 +108,31 @@ export const checkoutQuoteRepository = {
         $gt: currentDate,
       },
     }).exec();
+  },
+
+  markConsumedForGuest(
+    quoteId: string,
+    guestSessionHash: string,
+    consumedAt: Date,
+  ) {
+    return CheckoutQuoteModel.findOneAndUpdate(
+      {
+        quoteId,
+        customerType: "guest",
+        guestSessionHash,
+        consumedAt: null,
+        expiresAt: {
+          $gt: consumedAt,
+        },
+      },
+      {
+        $set: {
+          consumedAt,
+        },
+      },
+      {
+        new: true,
+      },
+    ).exec();
   },
 };

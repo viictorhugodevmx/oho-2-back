@@ -27,6 +27,14 @@ export const orderRepository = {
     }).exec();
   },
 
+  findByOrderNumberForGuest(orderNumber: string) {
+    return OrderModel.findOne({
+      orderNumber,
+      customerType: "guest",
+      userId: null,
+    }).exec();
+  },
+
   findByOrderNumberForUser(orderNumber: string, userId: Types.ObjectId) {
     return OrderModel.findOne({
       orderNumber,

@@ -10,6 +10,7 @@ import { designRouter } from "./modules/catalog/routes/design.routes.js";
 import { productRouter } from "./modules/catalog/routes/product.routes.js";
 import { checkoutRouter } from "./modules/checkout/routes/checkout.routes.js";
 import { healthRouter } from "./modules/health/health.routes.js";
+import { guestOrderRouter } from "./modules/orders/routes/guest-order.routes.js";
 import { orderRouter } from "./modules/orders/routes/order.routes.js";
 import { logger } from "./shared/logger/logger.js";
 
@@ -41,6 +42,7 @@ export function createApp() {
   app.use("/api/v1/designs", designRouter);
   app.use("/api/v1/auth", authRouter);
   app.use("/api/v1/checkout", checkoutRouter);
+  app.use("/api/v1/guest-orders", guestOrderRouter);
   app.use("/api/v1/orders", orderRouter);
 
   app.use((request, response) => {

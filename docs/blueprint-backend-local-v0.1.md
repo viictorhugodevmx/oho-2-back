@@ -56,7 +56,7 @@ despliegue independientes.
 
 MongoDB se ejecuta mediante la instalación local existente.
 
-Mailpit se ejecutará mediante Docker.
+Mailpit se ejecuta mediante Docker Compose.
 
 ## 5. Arquitectura
 

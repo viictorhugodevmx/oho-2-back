@@ -11,7 +11,7 @@ cotizaciones autoritativas y pedidos almacenados en MongoDB.
 Etapa actual:
 
 ```text
-Pasos 0–8 completados.
+Pasos 0–9 completados.
 ```
 
 Actualmente están implementados:
@@ -191,4 +191,13 @@ invitados están documentados en:
 
 ```text
 docs/guest-orders-v0.1.md
+```
+
+## Correos locales
+
+La infraestructura SMTP, las confirmaciones de pedidos y las reglas de
+seguridad están documentadas en:
+
+```text
+docs/email-notifications-v0.1.md
 ```

@@ -1,5 +1,6 @@
 import type { NextFunction, Request, Response } from "express";
 
+import { orderNotificationService } from "../../notifications/services/order-notification.service.js";
 import {
   GUEST_SESSION_HEADER,
   guestSessionService,
@@ -163,6 +164,13 @@ export async function createGuestOrder(
       idempotencyKey,
       body: bodyValidation.data,
     });
+
+    if (!result.replayed) {
+      await orderNotificationService.sendOrderConfirmation({
+        order: result.order,
+        guestAccessToken: result.guestAccessToken,
+      });
+    }
 
     response.status(result.responseStatusCode).json({
       data: {

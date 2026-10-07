@@ -9,6 +9,10 @@ const environmentSchema = z.object({
   PORT: z.coerce.number().int().positive().default(4000),
   MONGODB_URI: z.string().min(1),
   FRONTEND_URL: z.string().url(),
+  SMTP_HOST: z.string().min(1),
+  SMTP_PORT: z.coerce.number().int().min(1).max(65_535),
+  SMTP_SECURE: z.enum(["true", "false"]).transform((value) => value === "true"),
+  MAIL_FROM: z.string().min(1),
   LOG_LEVEL: z
     .enum(["fatal", "error", "warn", "info", "debug", "trace", "silent"])
     .default("info"),

@@ -2,6 +2,7 @@ import request from "supertest";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import { createApp } from "../../src/app.js";
+import { orderNotificationService } from "../../src/modules/notifications/services/order-notification.service.js";
 import { tokenService } from "../../src/modules/auth/services/token.service.js";
 import type { OrderDto } from "../../src/modules/orders/dtos/order.dto.js";
 import { IdempotencyError } from "../../src/modules/orders/services/idempotency.service.js";
@@ -104,6 +105,14 @@ function mockAuthentication(): void {
 describe("Account orders API", () => {
   beforeEach(() => {
     vi.restoreAllMocks();
+
+    vi.spyOn(
+      orderNotificationService,
+      "sendOrderConfirmation",
+    ).mockResolvedValue({
+      delivered: true,
+      messageId: "mailpit-test-message",
+    });
   });
 
   it("crea un pedido para la cuenta autenticada", async () => {
@@ -135,6 +144,12 @@ describe("Account orders API", () => {
     expect(input?.userId.toString()).toBe(USER_ID);
     expect(input?.idempotencyKey).toBe(IDEMPOTENCY_KEY);
     expect(input?.body).toEqual(validBody);
+
+    expect(orderNotificationService.sendOrderConfirmation).toHaveBeenCalledWith(
+      {
+        order: orderResponse,
+      },
+    );
   });
 
   it("rechaza crear un pedido sin autenticación", async () => {
@@ -298,5 +313,25 @@ describe("Account orders API", () => {
 
     expect(response.body.error.code).toBe("VALIDATION_ERROR");
     expect(findForAccount).not.toHaveBeenCalled();
+  });
+  it("no reenvía la confirmación durante un replay idempotente", async () => {
+    mockAuthentication();
+
+    vi.spyOn(orderService, "createForAccount").mockResolvedValue({
+      order: orderResponse,
+      responseStatusCode: 201,
+      replayed: true,
+    });
+
+    await request(createApp())
+      .post("/api/v1/orders")
+      .set("Authorization", "Bearer valid-access-token")
+      .set("Idempotency-Key", IDEMPOTENCY_KEY)
+      .send(validBody)
+      .expect(201);
+
+    expect(
+      orderNotificationService.sendOrderConfirmation,
+    ).not.toHaveBeenCalled();
   });
 });

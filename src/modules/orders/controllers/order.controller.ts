@@ -1,6 +1,7 @@
 import type { NextFunction, Request, Response } from "express";
 import { Types } from "mongoose";
 
+import { orderNotificationService } from "../../notifications/services/order-notification.service.js";
 import { IdempotencyError } from "../services/idempotency.service.js";
 import { OrderServiceError, orderService } from "../services/order.service.js";
 import {
@@ -128,6 +129,12 @@ export async function createAccountOrder(
       idempotencyKey: idempotencyValidation.data,
       body: bodyValidation.data,
     });
+
+    if (!result.replayed) {
+      await orderNotificationService.sendOrderConfirmation({
+        order: result.order,
+      });
+    }
 
     response.status(result.responseStatusCode).json({
       data: result.order,

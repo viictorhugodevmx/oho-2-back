@@ -2,6 +2,7 @@ import request from "supertest";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import { createApp } from "../../src/app.js";
+import { orderNotificationService } from "../../src/modules/notifications/services/order-notification.service.js";
 import {
   GUEST_SESSION_HEADER,
   guestSessionService,
@@ -89,6 +90,14 @@ const orderResponse: OrderDto = {
 describe("Guest orders API", () => {
   beforeEach(() => {
     vi.restoreAllMocks();
+
+    vi.spyOn(
+      orderNotificationService,
+      "sendOrderConfirmation",
+    ).mockResolvedValue({
+      delivered: true,
+      messageId: "mailpit-test-message",
+    });
   });
 
   it("crea un pedido para una sesión invitada", async () => {
@@ -126,6 +135,13 @@ describe("Guest orders API", () => {
       idempotencyKey: IDEMPOTENCY_KEY,
       body: validBody,
     });
+
+    expect(orderNotificationService.sendOrderConfirmation).toHaveBeenCalledWith(
+      {
+        order: orderResponse,
+        guestAccessToken,
+      },
+    );
   });
 
   it("requiere una sesión invitada para crear el pedido", async () => {
@@ -289,5 +305,31 @@ describe("Guest orders API", () => {
         details: [],
       },
     });
+  });
+  it("no reenvía la confirmación invitada durante un replay", async () => {
+    const guestSession = guestSessionService.create();
+
+    const guestAccessToken = guestOrderTokenService.createToken(
+      orderResponse.id,
+    );
+
+    vi.spyOn(guestOrderService, "create").mockResolvedValue({
+      order: orderResponse,
+      guestAccessToken,
+      accessExpiresAt: ACCESS_EXPIRATION,
+      responseStatusCode: 201,
+      replayed: true,
+    });
+
+    await request(createApp())
+      .post("/api/v1/guest-orders")
+      .set(GUEST_SESSION_HEADER, guestSession.token)
+      .set("Idempotency-Key", IDEMPOTENCY_KEY)
+      .send(validBody)
+      .expect(201);
+
+    expect(
+      orderNotificationService.sendOrderConfirmation,
+    ).not.toHaveBeenCalled();
   });
 });

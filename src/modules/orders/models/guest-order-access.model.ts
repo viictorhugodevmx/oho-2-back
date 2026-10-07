@@ -1,4 +1,4 @@
-import mongoose, { Schema, model, type Types } from "mongoose";
+import mongoose, { Schema, model, type Model, type Types } from "mongoose";
 
 export interface GuestOrderAccess {
   orderId: Types.ObjectId;
@@ -60,6 +60,6 @@ guestOrderAccessSchema.index({
   expiresAt: 1,
 });
 
-export const GuestOrderAccessModel =
-  mongoose.models.GuestOrderAccess ??
+export const GuestOrderAccessModel: Model<GuestOrderAccess> =
+  (mongoose.models.GuestOrderAccess as Model<GuestOrderAccess> | undefined) ??
   model<GuestOrderAccess>("GuestOrderAccess", guestOrderAccessSchema);

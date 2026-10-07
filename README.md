@@ -11,7 +11,7 @@ cotizaciones autoritativas y pedidos almacenados en MongoDB.
 Etapa actual:
 
 ```text
-Pasos 0–6 completados.
+Pasos 0–7 completados.
 ```
 
 Actualmente están implementados:
@@ -174,3 +174,12 @@ https://oho-2.netlify.app/
 ## Autor
 
 **Víctor Hugo Segundo Aguilar**
+
+## Pedidos con cuenta
+
+El contrato, la idempotencia y las reglas de seguridad para pedidos de
+usuarios autenticados están documentados en:
+
+```text
+docs/account-orders-v0.1.md
+```

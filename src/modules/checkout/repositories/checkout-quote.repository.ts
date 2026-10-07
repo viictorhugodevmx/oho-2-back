@@ -36,6 +36,14 @@ export const checkoutQuoteRepository = {
     return CheckoutQuoteModel.create(record);
   },
 
+  findForAccount(quoteId: string, userId: Types.ObjectId) {
+    return CheckoutQuoteModel.findOne({
+      quoteId,
+      customerType: "account",
+      userId,
+    }).exec();
+  },
+
   findActiveForAccount(
     quoteId: string,
     userId: Types.ObjectId,
@@ -50,6 +58,32 @@ export const checkoutQuoteRepository = {
         $gt: currentDate,
       },
     }).exec();
+  },
+
+  markConsumedForAccount(
+    quoteId: string,
+    userId: Types.ObjectId,
+    consumedAt: Date,
+  ) {
+    return CheckoutQuoteModel.findOneAndUpdate(
+      {
+        quoteId,
+        customerType: "account",
+        userId,
+        consumedAt: null,
+        expiresAt: {
+          $gt: consumedAt,
+        },
+      },
+      {
+        $set: {
+          consumedAt,
+        },
+      },
+      {
+        new: true,
+      },
+    ).exec();
   },
 
   findActiveForGuest(

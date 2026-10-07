@@ -10,6 +10,7 @@ export {
   type OrderAddress,
   type OrderContact,
   type OrderItem,
+  type OrderSelectedOption,
   type OrderStatus,
   type PaymentStatus,
   type ProductFormat,

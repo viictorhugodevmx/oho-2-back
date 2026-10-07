@@ -1,4 +1,5 @@
-import mongoose, { Schema, model, type Types } from "mongoose";
+import mongoose, { Schema, model, type Model, type Types } from "mongoose";
+
 import { PRODUCT_FORMATS } from "../../catalog/models/product.model.js";
 
 export type ProductFormat = (typeof PRODUCT_FORMATS)[number];
@@ -29,8 +30,7 @@ export type PaymentStatus = (typeof PAYMENT_STATUSES)[number];
 export type FulfillmentStatus = (typeof FULFILLMENT_STATUSES)[number];
 
 export interface OrderContact {
-  firstName: string;
-  lastName: string;
+  fullName: string;
   email: string;
   phone: string;
 }
@@ -46,26 +46,41 @@ export interface OrderAddress {
   references?: string;
 }
 
+export interface OrderSelectedOption {
+  optionId: string;
+  optionName: string;
+  valueId: string;
+  valueLabel: string;
+  value: string;
+  priceModifierCents: number;
+}
+
 export interface OrderItem {
   productId: Types.ObjectId;
   productExternalId: string;
   productSlug: string;
   productName: string;
+  productImageUrl: string;
   designId: Types.ObjectId;
   designExternalId: string;
   designSlug: string;
   designTitle: string;
+  designImageUrl: string;
   format: ProductFormat;
+  formatLabel: string;
+  formatPriceAdjustmentCents: number;
+  selectedOptions: OrderSelectedOption[];
   quantity: number;
+  basePriceCents: number;
   unitPriceCents: number;
   lineTotalCents: number;
-  previewImageUrl: string;
   printProviderProductId?: string;
   printProviderFileId?: string;
 }
 
 export interface Order {
   orderNumber: string;
+  quoteId: string;
   customerType: CustomerType;
   userId: Types.ObjectId | null;
   contact: OrderContact;
@@ -82,21 +97,19 @@ export interface Order {
   updatedAt: Date;
 }
 
+const urlValidator = {
+  validator: (value: string) => URL.canParse(value),
+  message: "{PATH} must be a valid URL.",
+};
+
 const contactSchema = new Schema<OrderContact>(
   {
-    firstName: {
+    fullName: {
       type: String,
       required: true,
       trim: true,
       minlength: 2,
-      maxlength: 80,
-    },
-    lastName: {
-      type: String,
-      required: true,
-      trim: true,
-      minlength: 2,
-      maxlength: 120,
+      maxlength: 160,
     },
     email: {
       type: String,
@@ -125,6 +138,7 @@ const addressSchema = new Schema<OrderAddress>(
       type: String,
       required: true,
       trim: true,
+      minlength: 4,
       maxlength: 200,
     },
     addressLine2: {
@@ -141,12 +155,14 @@ const addressSchema = new Schema<OrderAddress>(
       type: String,
       required: true,
       trim: true,
+      minlength: 2,
       maxlength: 120,
     },
     state: {
       type: String,
       required: true,
       trim: true,
+      minlength: 2,
       maxlength: 120,
     },
     postalCode: {
@@ -160,6 +176,7 @@ const addressSchema = new Schema<OrderAddress>(
       type: String,
       required: true,
       trim: true,
+      minlength: 2,
       maxlength: 80,
       default: "México",
     },
@@ -167,6 +184,50 @@ const addressSchema = new Schema<OrderAddress>(
       type: String,
       trim: true,
       maxlength: 500,
+    },
+  },
+  {
+    _id: false,
+  },
+);
+
+const selectedOptionSchema = new Schema<OrderSelectedOption>(
+  {
+    optionId: {
+      type: String,
+      required: true,
+      trim: true,
+      maxlength: 80,
+    },
+    optionName: {
+      type: String,
+      required: true,
+      trim: true,
+      maxlength: 120,
+    },
+    valueId: {
+      type: String,
+      required: true,
+      trim: true,
+      maxlength: 80,
+    },
+    valueLabel: {
+      type: String,
+      required: true,
+      trim: true,
+      maxlength: 120,
+    },
+    value: {
+      type: String,
+      required: true,
+      trim: true,
+      maxlength: 120,
+    },
+    priceModifierCents: {
+      type: Number,
+      required: true,
+      min: 0,
+      validate: Number.isInteger,
     },
   },
   {
@@ -185,17 +246,26 @@ const orderItemSchema = new Schema<OrderItem>(
       type: String,
       required: true,
       trim: true,
+      maxlength: 120,
     },
     productSlug: {
       type: String,
       required: true,
       trim: true,
       lowercase: true,
+      maxlength: 160,
     },
     productName: {
       type: String,
       required: true,
       trim: true,
+      maxlength: 200,
+    },
+    productImageUrl: {
+      type: String,
+      required: true,
+      trim: true,
+      validate: urlValidator,
     },
     designId: {
       type: Schema.Types.ObjectId,
@@ -206,28 +276,60 @@ const orderItemSchema = new Schema<OrderItem>(
       type: String,
       required: true,
       trim: true,
+      maxlength: 120,
     },
     designSlug: {
       type: String,
       required: true,
       trim: true,
       lowercase: true,
+      maxlength: 160,
     },
     designTitle: {
       type: String,
       required: true,
       trim: true,
+      maxlength: 200,
+    },
+    designImageUrl: {
+      type: String,
+      required: true,
+      trim: true,
+      validate: urlValidator,
     },
     format: {
       type: String,
       enum: PRODUCT_FORMATS,
       required: true,
     },
+    formatLabel: {
+      type: String,
+      required: true,
+      trim: true,
+      maxlength: 120,
+    },
+    formatPriceAdjustmentCents: {
+      type: Number,
+      required: true,
+      min: 0,
+      validate: Number.isInteger,
+    },
+    selectedOptions: {
+      type: [selectedOptionSchema],
+      required: true,
+      default: [],
+    },
     quantity: {
       type: Number,
       required: true,
       min: 1,
       max: 10,
+      validate: Number.isInteger,
+    },
+    basePriceCents: {
+      type: Number,
+      required: true,
+      min: 0,
       validate: Number.isInteger,
     },
     unitPriceCents: {
@@ -241,15 +343,6 @@ const orderItemSchema = new Schema<OrderItem>(
       required: true,
       min: 0,
       validate: Number.isInteger,
-    },
-    previewImageUrl: {
-      type: String,
-      required: true,
-      trim: true,
-      validate: {
-        validator: (value: string) => URL.canParse(value),
-        message: "previewImageUrl must be a valid URL",
-      },
     },
     printProviderProductId: {
       type: String,
@@ -274,6 +367,12 @@ const orderSchema = new Schema<Order>(
       trim: true,
       uppercase: true,
       match: /^OHO-[A-Z0-9-]+$/,
+    },
+    quoteId: {
+      type: String,
+      required: true,
+      unique: true,
+      trim: true,
     },
     customerType: {
       type: String,
@@ -301,7 +400,7 @@ const orderSchema = new Schema<Order>(
       required: true,
       validate: {
         validator: (items: OrderItem[]) => items.length > 0,
-        message: "An order must contain at least one item",
+        message: "An order must contain at least one item.",
       },
     },
     currency: {
@@ -353,13 +452,22 @@ const orderSchema = new Schema<Order>(
   },
 );
 
-orderSchema.index({ userId: 1, createdAt: -1 });
-orderSchema.index({ "contact.email": 1, createdAt: -1 });
+orderSchema.index({
+  userId: 1,
+  createdAt: -1,
+});
+
+orderSchema.index({
+  "contact.email": 1,
+  createdAt: -1,
+});
+
 orderSchema.index({
   status: 1,
   paymentStatus: 1,
   fulfillmentStatus: 1,
 });
 
-export const OrderModel =
-  mongoose.models.Order ?? model<Order>("Order", orderSchema);
+export const OrderModel: Model<Order> =
+  (mongoose.models.Order as Model<Order> | undefined) ??
+  model<Order>("Order", orderSchema);

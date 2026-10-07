@@ -74,6 +74,15 @@ export const catalogRepository = {
     }).exec();
   },
 
+  findActiveProductsBySlugs(slugs: string[]) {
+    return ProductModel.find({
+      slug: {
+        $in: slugs,
+      },
+      active: true,
+    }).exec();
+  },
+
   findActiveDesigns(filters: DesignFilters) {
     const query: {
       active: boolean;
@@ -97,6 +106,15 @@ export const catalogRepository = {
   findActiveDesignBySlug(slug: string) {
     return DesignModel.findOne({
       slug,
+      active: true,
+    }).exec();
+  },
+
+  findActiveDesignsBySlugs(slugs: string[]) {
+    return DesignModel.find({
+      slug: {
+        $in: slugs,
+      },
       active: true,
     }).exec();
   },

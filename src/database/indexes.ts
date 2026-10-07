@@ -4,6 +4,7 @@ import {
 } from "../modules/auth/models/index.js";
 import { DesignModel } from "../modules/catalog/models/design.model.js";
 import { ProductModel } from "../modules/catalog/models/product.model.js";
+import { CheckoutQuoteModel } from "../modules/checkout/models/checkout-quote.model.js";
 import {
   GuestOrderAccessModel,
   IdempotencyRecordModel,
@@ -17,6 +18,7 @@ export async function ensureDatabaseIndexes(): Promise<void> {
     DesignModel.createIndexes(),
     UserModel.createIndexes(),
     RefreshSessionModel.createIndexes(),
+    CheckoutQuoteModel.createIndexes(),
     OrderModel.createIndexes(),
     GuestOrderAccessModel.createIndexes(),
     IdempotencyRecordModel.createIndexes(),
@@ -29,6 +31,7 @@ export async function ensureDatabaseIndexes(): Promise<void> {
         "Design",
         "User",
         "RefreshSession",
+        "CheckoutQuote",
         "Order",
         "GuestOrderAccess",
         "IdempotencyRecord",

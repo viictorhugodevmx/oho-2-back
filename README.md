@@ -1,9 +1,9 @@
 # OHO 2.0 — Backend
 
-API REST para el ecommerce OHO 2.0.
+API REST del ecommerce OHO 2.0.
 
-Este repositorio sustituirá progresivamente los mocks y el almacenamiento
-local del frontend por autenticación segura, catálogo persistente,
+Este repositorio sustituye progresivamente los mocks y el almacenamiento local
+del frontend mediante autenticación segura, catálogo persistente,
 cotizaciones autoritativas y pedidos almacenados en MongoDB.
 
 ## Estado
@@ -11,12 +11,25 @@ cotizaciones autoritativas y pedidos almacenados en MongoDB.
 Etapa actual:
 
 ```text
-Paso 0 — Blueprint y preparación
+Pasos 0–6 completados.
 ```
 
-Todavía no contiene código ejecutable ni dependencias instaladas.
+Actualmente están implementados:
 
-## Stack previsto
+- Configuración de Express y TypeScript.
+- Health check.
+- Conexión con MongoDB.
+- Modelos e índices.
+- Datos semilla del catálogo.
+- API de productos y diseños.
+- Registro, inicio de sesión, renovación y cierre de sesión.
+- Sesiones mediante access token y refresh cookie httpOnly.
+- Sesión para compradores invitados.
+- Cotización autoritativa y persistente.
+- Validación de productos, diseños, formatos, opciones y cantidades.
+- Cálculo de subtotal, envío y total desde el backend.
+
+## Stack
 
 - Node.js 22.19.0
 - TypeScript
@@ -25,11 +38,10 @@ Todavía no contiene código ejecutable ni dependencias instaladas.
 - Mongoose
 - Zod
 - bcrypt
-- JWT mediante cookies httpOnly
+- JWT
 - Pino
 - Vitest
 - Supertest
-- Mailpit
 
 ## Servicios locales
 
@@ -42,49 +54,108 @@ Todavía no contiene código ejecutable ni dependencias instaladas.
 | Mailpit  | http://localhost:8025                 |
 | SMTP     | localhost:1025                        |
 
-## Requisitos
+## Preparación local
 
-```bash
-node --version
-npm --version
-mongod --version
-mongosh --version
-docker --version
-docker compose version
-```
-
-Versiones verificadas durante la preparación:
-
-```text
-Node.js: 22.19.0
-npm: 10.9.3
-MongoDB: 6.0.20
-Mongosh: 2.4.2
-Docker: 28.0.4
-Docker Compose: 2.34.0
-```
-
-## Configuración futura
-
-Cuando exista el setup ejecutable, las variables locales se crearán desde:
+Crear la configuración local:
 
 ```bash
 cp .env.example .env
 ```
 
-Los secretos de `.env.example` son marcadores y deberán sustituirse por
+Los valores secretos de `.env.example` son marcadores. Deben sustituirse por
 valores aleatorios antes de ejecutar autenticación.
 
 El archivo `.env` nunca debe confirmarse en Git.
 
-## Documentación
+Instalar dependencias:
 
-El alcance, arquitectura, entidades, endpoints, seguridad y plan de
-construcción se encuentran en:
+```bash
+npm install
+```
+
+Preparar índices y catálogo:
+
+```bash
+npm run db:indexes
+npm run db:seed
+```
+
+Iniciar la API:
+
+```bash
+npm run dev
+```
+
+## Comandos de calidad
+
+```bash
+npm run format
+npm run format:check
+npm run lint
+npm run typecheck
+npm run test
+npm run build
+npm run check
+```
+
+## Endpoints implementados
+
+Base:
 
 ```text
-docs/blueprint-backend-local-v0.1.md
+http://localhost:4000/api/v1
 ```
+
+### Sistema
+
+```text
+GET /health
+```
+
+### Catálogo
+
+```text
+GET /products
+GET /products/:slug
+GET /designs
+GET /designs/:slug
+```
+
+### Autenticación
+
+```text
+POST /auth/register
+POST /auth/login
+POST /auth/refresh
+POST /auth/logout
+GET  /auth/me
+```
+
+### Checkout
+
+```text
+POST /checkout/guest-session
+POST /checkout/quote
+```
+
+Las cuentas pueden cotizar enviando su access token mediante
+`Authorization: Bearer <token>`.
+
+Los invitados primero solicitan una sesión y después envían el token recibido
+mediante el header:
+
+```text
+x-oho-guest-session-token
+```
+
+Los precios y totales enviados por el frontend nunca se consideran
+confiables. El backend consulta el catálogo y vuelve a calcular cada importe.
+
+## Documentación
+
+- `docs/blueprint-backend-local-v0.1.md`
+- `docs/authentication-v0.1.md`
+- `docs/checkout-quote-v0.1.md`
 
 ## Repositorio relacionado
 
@@ -94,7 +165,7 @@ Frontend:
 git@github.com:viictorhugodevmx/oho-2-front.git
 ```
 
-Sitio mock desplegado:
+Demo actual del frontend:
 
 ```text
 https://oho-2.netlify.app/
@@ -103,12 +174,3 @@ https://oho-2.netlify.app/
 ## Autor
 
 **Víctor Hugo Segundo Aguilar**
-
-## Autenticación
-
-El contrato, las decisiones de seguridad y las pruebas del módulo de
-autenticación están documentados en:
-
-```text
-docs/authentication-v0.1.md
-```

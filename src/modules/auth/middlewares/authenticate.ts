@@ -2,7 +2,7 @@ import type { NextFunction, Request, Response } from "express";
 
 import { tokenService } from "../services/token.service.js";
 
-function sendUnauthorized(response: Response): void {
+export function sendUnauthorized(response: Response): void {
   response.status(401).json({
     error: {
       code: "UNAUTHORIZED",
@@ -12,7 +12,9 @@ function sendUnauthorized(response: Response): void {
   });
 }
 
-function getBearerToken(authorization: string | undefined): string | null {
+export function getBearerToken(
+  authorization: string | undefined,
+): string | null {
   if (!authorization) {
     return null;
   }

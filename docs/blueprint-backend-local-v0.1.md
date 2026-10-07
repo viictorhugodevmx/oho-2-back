@@ -265,7 +265,7 @@ El backend será responsable de:
 
 - Consultar productos y diseños.
 - Validar elementos activos.
-- Validar formatos y cantidades.
+- Validar formatos, opciones y cantidades.
 - Calcular precios.
 - Calcular envío.
 - Calcular totales.
@@ -276,7 +276,7 @@ El backend será responsable de:
 - Evitar duplicados.
 
 El frontend no enviará totales confiables. Solamente enviará identificadores,
-formato y cantidad.
+formato, cantidad y los identificadores de las opciones seleccionadas.
 
 ## 10. Reglas comerciales iniciales
 
@@ -334,7 +334,7 @@ Los tres grupos permanecen separados.
 1. El frontend obtiene catálogo desde la API.
 2. El comprador configura productos.
 3. El frontend solicita una cotización.
-4. El backend valida productos, diseños, formatos y cantidades.
+4. El backend valida productos, diseños, formatos, opciones y cantidades.
 5. El backend devuelve subtotal, envío, total y vigencia.
 6. El comprador completa contacto y entrega.
 7. El frontend solicita crear el pedido con idempotencia.
@@ -381,6 +381,7 @@ GET  /auth/me
 ### Checkout
 
 ```text
+POST /checkout/guest-session
 POST /checkout/quote
 ```
 

@@ -1,5 +1,7 @@
 import { Router } from "express";
 
+import { createGuestCheckoutSession } from "../../payments/controllers/checkout-session.controller.js";
+import { checkoutSessionRateLimiter } from "../../payments/middlewares/payment-rate-limit.js";
 import {
   createGuestOrder,
   getGuestOrder,
@@ -10,6 +12,12 @@ import { createOrderRateLimiter } from "../middlewares/order-rate-limit.js";
 export const guestOrderRouter = Router();
 
 guestOrderRouter.post("/", createOrderRateLimiter, createGuestOrder);
+
+guestOrderRouter.post(
+  "/:orderNumber/checkout-session",
+  checkoutSessionRateLimiter,
+  createGuestCheckoutSession,
+);
 
 guestOrderRouter.get(
   "/:orderNumber",

@@ -69,7 +69,12 @@ export function mapOrderToDto(order: OrderRecord): OrderDto {
     totalCents: order.totalCents,
     status: order.status,
     paymentStatus: order.paymentStatus,
+    paymentProvider: order.paymentProvider,
+    paidAt: order.paidAt?.toISOString() ?? null,
     fulfillmentStatus: order.fulfillmentStatus,
+    fulfillmentProvider: order.fulfillmentProvider,
+    fulfillmentReference: order.fulfillmentReference,
+    fulfillmentSubmittedAt: order.fulfillmentSubmittedAt?.toISOString() ?? null,
     createdAt: order.createdAt.toISOString(),
     updatedAt: order.updatedAt.toISOString(),
   };

@@ -127,7 +127,7 @@ function createOrder() {
     totalCents: 99800,
     status: "pending",
     paymentStatus: "pending",
-    fulfillmentStatus: "pending",
+    fulfillmentStatus: "not_requested",
     createdAt: currentDate,
     updatedAt: currentDate,
   };

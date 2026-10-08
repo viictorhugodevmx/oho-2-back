@@ -53,4 +53,75 @@ export const orderRepository = {
       })
       .exec();
   },
+
+  markPaidAndConfirmed(orderId: Types.ObjectId, paidAt: Date) {
+    return OrderModel.findOneAndUpdate(
+      {
+        _id: orderId,
+        paymentStatus: {
+          $ne: "paid",
+        },
+        status: {
+          $ne: "cancelled",
+        },
+      },
+      {
+        $set: {
+          status: "confirmed",
+          paymentStatus: "paid",
+          paymentProvider: "stripe",
+          paidAt,
+        },
+      },
+      {
+        new: true,
+      },
+    ).exec();
+  },
+
+  markPaymentFailed(orderId: Types.ObjectId) {
+    return OrderModel.findOneAndUpdate(
+      {
+        _id: orderId,
+        paymentStatus: {
+          $ne: "paid",
+        },
+      },
+      {
+        $set: {
+          paymentStatus: "failed",
+          paymentProvider: "stripe",
+        },
+      },
+      {
+        new: true,
+      },
+    ).exec();
+  },
+
+  markFulfillmentSubmitted(
+    orderId: Types.ObjectId,
+    reference: string,
+    submittedAt: Date,
+  ) {
+    return OrderModel.findOneAndUpdate(
+      {
+        _id: orderId,
+        fulfillmentStatus: {
+          $nin: ["submitted", "in_production", "shipped", "delivered"],
+        },
+      },
+      {
+        $set: {
+          fulfillmentStatus: "submitted",
+          fulfillmentProvider: "simulated",
+          fulfillmentReference: reference,
+          fulfillmentSubmittedAt: submittedAt,
+        },
+      },
+      {
+        new: true,
+      },
+    ).exec();
+  },
 };

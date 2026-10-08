@@ -13,6 +13,21 @@ const environmentSchema = z.object({
   SMTP_PORT: z.coerce.number().int().min(1).max(65_535),
   SMTP_SECURE: z.enum(["true", "false"]).transform((value) => value === "true"),
   MAIL_FROM: z.string().min(1),
+  STRIPE_SECRET_KEY: z
+    .string()
+    .regex(
+      /^sk_test_/,
+      "STRIPE_SECRET_KEY must be a Stripe Sandbox secret key.",
+    ),
+  STRIPE_WEBHOOK_SECRET: z
+    .string()
+    .regex(/^whsec_/, "STRIPE_WEBHOOK_SECRET must be a Stripe webhook secret."),
+  STRIPE_CHECKOUT_SESSION_TTL_MINUTES: z.coerce
+    .number()
+    .int()
+    .min(30)
+    .max(1_440)
+    .default(30),
   LOG_LEVEL: z
     .enum(["fatal", "error", "warn", "info", "debug", "trace", "silent"])
     .default("info"),

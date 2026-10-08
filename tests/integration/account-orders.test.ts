@@ -90,7 +90,12 @@ const orderResponse: OrderDto = {
   totalCents: 99_800,
   status: "pending",
   paymentStatus: "pending",
-  fulfillmentStatus: "pending",
+  paymentProvider: null,
+  paidAt: null,
+  fulfillmentStatus: "not_requested",
+  fulfillmentProvider: null,
+  fulfillmentReference: null,
+  fulfillmentSubmittedAt: null,
   createdAt: "2026-10-07T18:00:00.000Z",
   updatedAt: "2026-10-07T18:00:00.000Z",
 };

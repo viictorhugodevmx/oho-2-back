@@ -248,7 +248,12 @@ export const guestOrderService = {
         totalCents: quote.totalCents,
         status: "pending",
         paymentStatus: "pending",
-        fulfillmentStatus: "pending",
+        paymentProvider: null,
+        paidAt: null,
+        fulfillmentStatus: "not_requested",
+        fulfillmentProvider: null,
+        fulfillmentReference: null,
+        fulfillmentSubmittedAt: null,
       });
     } catch (error) {
       if (isDuplicateKeyError(error)) {

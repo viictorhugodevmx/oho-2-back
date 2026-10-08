@@ -1,7 +1,9 @@
 import type { ProductFormat } from "../../catalog/dtos/catalog.dto.js";
 import type {
   CustomerType,
+  FulfillmentProvider,
   FulfillmentStatus,
+  OrderPaymentProvider,
   OrderStatus,
   PaymentStatus,
 } from "../models/order.model.js";
@@ -65,7 +67,12 @@ export interface OrderDto {
   totalCents: number;
   status: OrderStatus;
   paymentStatus: PaymentStatus;
+  paymentProvider: OrderPaymentProvider | null;
+  paidAt: string | null;
   fulfillmentStatus: FulfillmentStatus;
+  fulfillmentProvider: FulfillmentProvider | null;
+  fulfillmentReference: string | null;
+  fulfillmentSubmittedAt: string | null;
   createdAt: string;
   updatedAt: string;
 }

@@ -11,7 +11,7 @@ cotizaciones autoritativas y pedidos almacenados en MongoDB.
 Etapa actual:
 
 ```text
-Pasos 0–9 completados.
+Pasos 0–10 completados.
 ```
 
 Actualmente están implementados:
@@ -200,4 +200,13 @@ seguridad están documentadas en:
 
 ```text
 docs/email-notifications-v0.1.md
+```
+
+## Pagos con Stripe Sandbox
+
+El flujo de Stripe Checkout, los webhooks firmados, la idempotencia y la
+producción simulada están documentados en:
+
+```text
+docs/stripe-payments-v0.1.md
 ```

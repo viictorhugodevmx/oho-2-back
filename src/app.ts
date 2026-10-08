@@ -1,3 +1,4 @@
+import { paymentRouter } from "./modules/payments/routes/payment.routes.js";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import express, { type ErrorRequestHandler } from "express";
@@ -33,6 +34,8 @@ export function createApp() {
       credentials: true,
     }),
   );
+
+  app.use("/api/v1/payments", paymentRouter);
 
   app.use(express.json({ limit: "1mb" }));
   app.use(cookieParser());

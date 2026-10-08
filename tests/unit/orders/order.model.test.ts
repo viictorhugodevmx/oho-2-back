@@ -67,7 +67,27 @@ describe("OrderModel", () => {
 
     expect(order.status).toBe("pending");
     expect(order.paymentStatus).toBe("pending");
-    expect(order.fulfillmentStatus).toBe("pending");
+    expect(order.fulfillmentStatus).toBe("not_requested");
+    expect(order.paymentProvider).toBeNull();
+    expect(order.paidAt).toBeNull();
+    expect(order.fulfillmentProvider).toBeNull();
+    expect(order.fulfillmentReference).toBeNull();
+    expect(order.fulfillmentSubmittedAt).toBeNull();
+  });
+
+  it("acepta los estados posteriores al pago y producción", async () => {
+    const order = createValidOrder();
+
+    order.status = "confirmed";
+    order.paymentStatus = "paid";
+    order.paymentProvider = "stripe";
+    order.paidAt = new Date("2026-10-07T20:00:00.000Z");
+    order.fulfillmentStatus = "submitted";
+    order.fulfillmentProvider = "simulated";
+    order.fulfillmentReference = "SIM-OHO-TEST-0001";
+    order.fulfillmentSubmittedAt = new Date("2026-10-07T20:00:01.000Z");
+
+    await expect(order.validate()).resolves.toBeUndefined();
   });
 
   it("permite una orden de cuenta con snapshot completo", async () => {

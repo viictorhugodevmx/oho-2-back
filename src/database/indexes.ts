@@ -6,6 +6,10 @@ import { DesignModel } from "../modules/catalog/models/design.model.js";
 import { ProductModel } from "../modules/catalog/models/product.model.js";
 import { CheckoutQuoteModel } from "../modules/checkout/models/checkout-quote.model.js";
 import {
+  PaymentAttemptModel,
+  StripeWebhookEventModel,
+} from "../modules/payments/models/index.js";
+import {
   GuestOrderAccessModel,
   IdempotencyRecordModel,
   OrderModel,
@@ -22,6 +26,8 @@ export async function ensureDatabaseIndexes(): Promise<void> {
     OrderModel.createIndexes(),
     GuestOrderAccessModel.createIndexes(),
     IdempotencyRecordModel.createIndexes(),
+    PaymentAttemptModel.createIndexes(),
+    StripeWebhookEventModel.createIndexes(),
   ]);
 
   logger.info(
@@ -35,6 +41,8 @@ export async function ensureDatabaseIndexes(): Promise<void> {
         "Order",
         "GuestOrderAccess",
         "IdempotencyRecord",
+        "PaymentAttempt",
+        "StripeWebhookEvent",
       ],
     },
     "MongoDB indexes ensured",

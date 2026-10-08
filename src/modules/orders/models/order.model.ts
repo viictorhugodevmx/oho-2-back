@@ -6,28 +6,43 @@ export type ProductFormat = (typeof PRODUCT_FORMATS)[number];
 
 export const CUSTOMER_TYPES = ["account", "guest"] as const;
 
-export const ORDER_STATUSES = ["pending", "confirmed", "cancelled"] as const;
+export const ORDER_STATUSES = [
+  "pending",
+  "confirmed",
+  "processing",
+  "completed",
+  "cancelled",
+] as const;
 
 export const PAYMENT_STATUSES = [
   "pending",
+  "authorized",
   "paid",
   "failed",
   "refunded",
 ] as const;
 
 export const FULFILLMENT_STATUSES = [
+  "not_requested",
   "pending",
   "submitted",
   "in_production",
   "shipped",
   "delivered",
+  "failed",
   "cancelled",
 ] as const;
+
+export const ORDER_PAYMENT_PROVIDERS = ["stripe"] as const;
+
+export const FULFILLMENT_PROVIDERS = ["simulated"] as const;
 
 export type CustomerType = (typeof CUSTOMER_TYPES)[number];
 export type OrderStatus = (typeof ORDER_STATUSES)[number];
 export type PaymentStatus = (typeof PAYMENT_STATUSES)[number];
 export type FulfillmentStatus = (typeof FULFILLMENT_STATUSES)[number];
+export type OrderPaymentProvider = (typeof ORDER_PAYMENT_PROVIDERS)[number];
+export type FulfillmentProvider = (typeof FULFILLMENT_PROVIDERS)[number];
 
 export interface OrderContact {
   fullName: string;
@@ -92,7 +107,12 @@ export interface Order {
   totalCents: number;
   status: OrderStatus;
   paymentStatus: PaymentStatus;
+  paymentProvider: OrderPaymentProvider | null;
+  paidAt: Date | null;
   fulfillmentStatus: FulfillmentStatus;
+  fulfillmentProvider: FulfillmentProvider | null;
+  fulfillmentReference: string | null;
+  fulfillmentSubmittedAt: Date | null;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -439,11 +459,35 @@ const orderSchema = new Schema<Order>(
       default: "pending",
       required: true,
     },
+    paymentProvider: {
+      type: String,
+      enum: ORDER_PAYMENT_PROVIDERS,
+      default: null,
+    },
+    paidAt: {
+      type: Date,
+      default: null,
+    },
     fulfillmentStatus: {
       type: String,
       enum: FULFILLMENT_STATUSES,
-      default: "pending",
+      default: "not_requested",
       required: true,
+    },
+    fulfillmentProvider: {
+      type: String,
+      enum: FULFILLMENT_PROVIDERS,
+      default: null,
+    },
+    fulfillmentReference: {
+      type: String,
+      trim: true,
+      maxlength: 200,
+      default: null,
+    },
+    fulfillmentSubmittedAt: {
+      type: Date,
+      default: null,
     },
   },
   {

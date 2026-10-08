@@ -500,7 +500,7 @@ Incluye:
 - Cotización autoritativa.
 - Pedidos persistentes.
 - Correos en Mailpit.
-- Pago simulado.
+- Pago mediante Stripe Sandbox y producción simulada.
 - Impresión simulada.
 - Integración completa con el frontend.
 - Pruebas críticas.
@@ -532,7 +532,7 @@ Incluye:
 | 7    | Pedidos con cuenta                      |
 | 8    | Compra invitada y acceso seguro         |
 | 9    | Correos locales con Mailpit             |
-| 10   | Pago e impresión simulados              |
+| 10   | Stripe Sandbox y producción simulada    |
 | 11   | Integración del frontend                |
 | 12   | Pruebas críticas y cierre local         |
 

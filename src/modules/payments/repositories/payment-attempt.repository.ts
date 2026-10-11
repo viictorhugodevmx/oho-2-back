@@ -57,7 +57,7 @@ export const paymentAttemptRepository = {
         },
       },
       {
-        new: true,
+        returnDocument: "after",
       },
     ).exec();
   },
@@ -74,7 +74,7 @@ export const paymentAttemptRepository = {
         },
       },
       {
-        new: true,
+        returnDocument: "after",
       },
     ).exec();
   },
@@ -94,7 +94,7 @@ export const paymentAttemptRepository = {
         },
       },
       {
-        new: true,
+        returnDocument: "after",
       },
     ).exec();
   },

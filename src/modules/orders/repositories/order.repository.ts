@@ -74,7 +74,7 @@ export const orderRepository = {
         },
       },
       {
-        new: true,
+        returnDocument: "after",
       },
     ).exec();
   },
@@ -94,7 +94,7 @@ export const orderRepository = {
         },
       },
       {
-        new: true,
+        returnDocument: "after",
       },
     ).exec();
   },
@@ -120,7 +120,7 @@ export const orderRepository = {
         },
       },
       {
-        new: true,
+        returnDocument: "after",
       },
     ).exec();
   },

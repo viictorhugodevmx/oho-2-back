@@ -81,7 +81,7 @@ export const checkoutQuoteRepository = {
         },
       },
       {
-        new: true,
+        returnDocument: "after",
       },
     ).exec();
   },
@@ -131,7 +131,7 @@ export const checkoutQuoteRepository = {
         },
       },
       {
-        new: true,
+        returnDocument: "after",
       },
     ).exec();
   },

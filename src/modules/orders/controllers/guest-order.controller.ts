@@ -235,14 +235,15 @@ export async function getGuestOrder(
   }
 
   try {
-    const order = await guestOrderAccessService.findByOrderNumber(
+    const result = await guestOrderAccessService.findByOrderNumber(
       paramsValidation.data.orderNumber,
       token,
     );
 
     response.status(200).json({
       data: {
-        order,
+        order: result.order,
+        accessExpiresAt: result.accessExpiresAt,
       },
     });
   } catch (error) {

@@ -181,9 +181,9 @@ La API no recibe el token mediante query string para evitar que aparezca en:
 - Herramientas de monitoreo.
 - Encabezados de referencia.
 
-Durante la integración del frontend, un enlace de correo podrá transportar el
-token mediante un fragmento de URL y el navegador lo enviará a la API mediante
-el header seguro.
+El enlace del correo transporta el token mediante un fragmento de URL. El
+frontend lo lee, lo envía a la API mediante el header seguro y después lo
+elimina de la barra de dirección.
 
 ## Errores previstos
 
@@ -209,4 +209,10 @@ revocado no revelarán cuál condición falló.
 - Envío real del correo.
 - Pago real.
 - Proveedor real de impresión.
-- Integración con el frontend.
+
+## Integración frontend validada
+
+El frontend crea la sesión invitada, cotiza, genera el pedido y conserva
+temporalmente su acceso privado. También permite abrir el enlace recibido en
+Mailpit, iniciar Stripe Checkout, consultar el resultado del pago y reintentar
+un pago cancelado.

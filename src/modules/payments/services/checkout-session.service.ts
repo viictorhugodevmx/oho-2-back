@@ -75,15 +75,19 @@ function assertOrderIsPayable(order: OrderRecord): void {
   }
 }
 
-function createSessionUrls(orderNumber: string) {
+function createSessionUrls(order: OrderRecord) {
   const frontendUrl = env.FRONTEND_URL.replace(/\/$/, "");
+  const encodedOrderNumber = encodeURIComponent(order.orderNumber);
+
+  const orderPath =
+    order.customerType === "account"
+      ? `/account/orders/${encodedOrderNumber}`
+      : `/order-confirmation/${encodedOrderNumber}`;
 
   return {
     successUrl:
       `${frontendUrl}/checkout/success` + "?session_id={CHECKOUT_SESSION_ID}",
-    cancelUrl:
-      `${frontendUrl}/checkout` +
-      `?payment=cancelled&order=${encodeURIComponent(orderNumber)}`,
+    cancelUrl: `${frontendUrl}${orderPath}` + "?payment=cancelled",
   };
 }
 
@@ -137,7 +141,7 @@ async function createForOrder(
 
   const expiresAt = getSessionExpiration(currentDate);
 
-  const urls = createSessionUrls(order.orderNumber);
+  const urls = createSessionUrls(order);
 
   const providerSession = await paymentProvider.createCheckoutSession(
     {

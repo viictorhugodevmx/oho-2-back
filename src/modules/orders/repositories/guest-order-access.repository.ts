@@ -47,7 +47,7 @@ export const guestOrderAccessRepository = {
         },
       },
       {
-        new: true,
+        returnDocument: "after",
       },
     ).exec();
   },

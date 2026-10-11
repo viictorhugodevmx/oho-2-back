@@ -240,4 +240,9 @@ Conocer el folio de otra cuenta no concede acceso.
 - Cobro real o simulado.
 - Envío a impresión.
 - Correos de confirmación.
-- Integración del frontend con estos endpoints.
+
+## Integración frontend validada
+
+El frontend permite crear pedidos desde una cotización vigente, consultar el
+historial de la cuenta, abrir el detalle de un pedido propio e iniciar o
+reintentar Stripe Checkout cuando el pago continúa pendiente.

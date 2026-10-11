@@ -241,10 +241,14 @@ describe("Guest orders API", () => {
 
   it("consulta un pedido con su token invitado", async () => {
     const token = guestOrderTokenService.createToken(orderResponse.id);
+    const accessExpiresAt = "2026-10-08T18:00:00.000Z";
 
     const findByOrderNumber = vi
       .spyOn(guestOrderAccessService, "findByOrderNumber")
-      .mockResolvedValue(orderResponse);
+      .mockResolvedValue({
+        order: orderResponse,
+        accessExpiresAt,
+      });
 
     const response = await request(createApp())
       .get(`/api/v1/guest-orders/${ORDER_NUMBER.toLowerCase()}`)
@@ -254,6 +258,7 @@ describe("Guest orders API", () => {
     expect(response.body).toEqual({
       data: {
         order: orderResponse,
+        accessExpiresAt,
       },
     });
 

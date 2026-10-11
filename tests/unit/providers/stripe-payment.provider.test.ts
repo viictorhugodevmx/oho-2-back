@@ -23,7 +23,7 @@ const input = {
   successUrl:
     "http://localhost:3000/checkout/success?session_id={CHECKOUT_SESSION_ID}",
   cancelUrl:
-    "http://localhost:3000/checkout?payment=cancelled&order=OHO-20261007-A1B2C3D4",
+    "http://localhost:3000/account/orders/OHO-20261007-A1B2C3D4?payment=cancelled",
   expiresAt,
 };
 

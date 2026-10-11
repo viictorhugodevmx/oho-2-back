@@ -222,8 +222,11 @@ Los índices TTL eliminan automáticamente las sesiones renovables vencidas.
 - Rate limiting.
 - Contratos HTTP de autenticación.
 
-## Integración pendiente
+## Integración con el frontend
 
-La conexión del frontend Next.js con estos endpoints pertenece al paso de
-integración del frontend. Hasta entonces, el frontend conserva temporalmente su
-implementación mock.
+El frontend Next.js utiliza estos endpoints para registro, login, consulta de
+la identidad actual, renovación y cierre de sesión.
+
+El refresh token permanece en una cookie `HttpOnly` administrada por el
+backend. El frontend conserva el access token únicamente durante la sesión de
+la aplicación y ya no almacena usuarios ni contraseñas simuladas.

@@ -55,7 +55,7 @@ export const idempotencyRepository = {
         },
       },
       {
-        new: true,
+        returnDocument: "after",
       },
     ).exec();
   },
@@ -74,7 +74,7 @@ export const idempotencyRepository = {
         },
       },
       {
-        new: true,
+        returnDocument: "after",
       },
     ).exec();
   },

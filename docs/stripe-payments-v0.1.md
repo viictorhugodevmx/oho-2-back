@@ -234,8 +234,11 @@ El adaptador local:
 Éxito:
 <FRONTEND_URL>/checkout/success?session_id={CHECKOUT_SESSION_ID}
 
-Cancelación:
-<FRONTEND_URL>/checkout?payment=cancelled&order=<folio>
+Cancelación para una cuenta:
+<FRONTEND_URL>/account/orders/<folio>?payment=cancelled
+
+Cancelación para un invitado:
+<FRONTEND_URL>/order-confirmation/<folio>?payment=cancelled
 ```
 
 El `session_id` permite al frontend consultar el resultado, pero no sustituye

@@ -19,6 +19,7 @@ const ORDER_NUMBER = "OHO-20261007-A1B2C3D4";
 const GUEST_ACCESS_TOKEN = "A".repeat(43);
 const TOKEN_HASH = "b".repeat(64);
 const CURRENT_DATE = new Date("2026-10-07T18:00:00.000Z");
+const ACCESS_EXPIRES_AT = new Date("2026-10-08T18:00:00.000Z");
 
 describe("guestOrderAccessService", () => {
   beforeEach(() => {
@@ -50,6 +51,7 @@ describe("guestOrderAccessService", () => {
       .mockResolvedValue({
         orderId,
         tokenHash: TOKEN_HASH,
+        expiresAt: ACCESS_EXPIRES_AT,
       } as never);
 
     vi.mocked(mapOrderToDto).mockReturnValue(expectedOrder);
@@ -60,7 +62,10 @@ describe("guestOrderAccessService", () => {
       CURRENT_DATE,
     );
 
-    expect(result).toEqual(expectedOrder);
+    expect(result).toEqual({
+      order: expectedOrder,
+      accessExpiresAt: ACCESS_EXPIRES_AT.toISOString(),
+    });
 
     expect(findOrder).toHaveBeenCalledWith(ORDER_NUMBER);
     expect(hashToken).toHaveBeenCalledWith(GUEST_ACCESS_TOKEN);

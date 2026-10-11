@@ -11,7 +11,7 @@ cotizaciones autoritativas y pedidos almacenados en MongoDB.
 Etapa actual:
 
 ```text
-Pasos 0–10 completados.
+Pasos 0–11 completados.
 ```
 
 Actualmente están implementados:
@@ -151,11 +151,46 @@ x-oho-guest-session-token
 Los precios y totales enviados por el frontend nunca se consideran
 confiables. El backend consulta el catálogo y vuelve a calcular cada importe.
 
+## Integración con el frontend
+
+El frontend Next.js consume la API real para autenticación, catálogo,
+cotizaciones, pedidos con cuenta e invitados y sesiones de Stripe Checkout.
+
+### Pedidos con cuenta
+
+```text
+POST /orders
+GET  /orders/me
+GET  /orders/me/:orderNumber
+POST /orders/me/:orderNumber/checkout-session
+```
+
+### Pedidos invitados
+
+```text
+POST /guest-orders
+GET  /guest-orders/:orderNumber
+POST /guest-orders/:orderNumber/checkout-session
+```
+
+### Webhook de Stripe
+
+```text
+POST /payments/stripe/webhook
+```
+
+La integración completa está documentada en:
+
+```text
+docs/frontend-integration-v0.1.md
+```
+
 ## Documentación
 
 - `docs/blueprint-backend-local-v0.1.md`
 - `docs/authentication-v0.1.md`
 - `docs/checkout-quote-v0.1.md`
+- `docs/frontend-integration-v0.1.md`
 
 ## Repositorio relacionado
 

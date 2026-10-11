@@ -95,7 +95,7 @@ describe("buildOrderConfirmationEmail", () => {
       },
     });
 
-    expect(email.text).toContain(`/orders/${order.orderNumber}`);
+    expect(email.text).toContain(`/account/orders/${order.orderNumber}`);
 
     expect(email.text).not.toContain("#token=");
   });
@@ -109,7 +109,7 @@ describe("buildOrderConfirmationEmail", () => {
     });
 
     expect(email.text).toContain(
-      `/orders/${order.orderNumber}#token=${guestAccessToken}`,
+      `/order-confirmation/${order.orderNumber}#token=${guestAccessToken}`,
     );
 
     expect(email.text).not.toContain("?token=");

@@ -45,7 +45,7 @@ export const stripeWebhookEventRepository = {
         },
       },
       {
-        new: true,
+        returnDocument: "after",
       },
     ).exec();
   },
@@ -64,7 +64,7 @@ export const stripeWebhookEventRepository = {
         },
       },
       {
-        new: true,
+        returnDocument: "after",
       },
     ).exec();
   },
@@ -82,7 +82,7 @@ export const stripeWebhookEventRepository = {
         },
       },
       {
-        new: true,
+        returnDocument: "after",
       },
     ).exec();
   },

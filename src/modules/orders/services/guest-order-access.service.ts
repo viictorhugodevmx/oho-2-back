@@ -1,4 +1,9 @@
 import type { OrderDto } from "../dtos/order.dto.js";
+
+export interface GuestOrderDetail {
+  order: OrderDto;
+  accessExpiresAt: string;
+}
 import { mapOrderToDto } from "../mappers/order.mapper.js";
 import { guestOrderAccessRepository } from "../repositories/guest-order-access.repository.js";
 import { orderRepository } from "../repositories/order.repository.js";
@@ -19,7 +24,7 @@ export const guestOrderAccessService = {
     orderNumber: string,
     token: string,
     currentDate = new Date(),
-  ): Promise<OrderDto> {
+  ): Promise<GuestOrderDetail> {
     const order = await orderRepository.findByOrderNumberForGuest(orderNumber);
 
     if (!order) {
@@ -38,6 +43,9 @@ export const guestOrderAccessService = {
       throw new GuestOrderAccessError();
     }
 
-    return mapOrderToDto(order);
+    return {
+      order: mapOrderToDto(order),
+      accessExpiresAt: access.expiresAt.toISOString(),
+    };
   },
 };

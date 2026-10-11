@@ -533,7 +533,7 @@ Incluye:
 | 8    | Compra invitada y acceso seguro         |
 | 9    | Correos locales con Mailpit             |
 | 10   | Stripe Sandbox y producción simulada    |
-| 11   | Integración del frontend                |
+| 11   | Integración completa del frontend       |
 | 12   | Pruebas críticas y cierre local         |
 
 ## 21. Criterio de éxito

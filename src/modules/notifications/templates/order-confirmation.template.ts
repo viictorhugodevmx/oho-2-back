@@ -28,13 +28,16 @@ function buildOrderUrl(
   guestAccessToken: string | undefined,
 ): string {
   const frontendUrl = env.FRONTEND_URL.replace(/\/$/, "");
-  const orderUrl = `${frontendUrl}/orders/${encodeURIComponent(orderNumber)}`;
+  const encodedOrderNumber = encodeURIComponent(orderNumber);
 
   if (!guestAccessToken) {
-    return orderUrl;
+    return `${frontendUrl}/account/orders/${encodedOrderNumber}`;
   }
 
-  return `${orderUrl}#token=${encodeURIComponent(guestAccessToken)}`;
+  return (
+    `${frontendUrl}/order-confirmation/${encodedOrderNumber}` +
+    `#token=${encodeURIComponent(guestAccessToken)}`
+  );
 }
 
 function buildOptionsText(item: OrderDto["items"][number]): string {

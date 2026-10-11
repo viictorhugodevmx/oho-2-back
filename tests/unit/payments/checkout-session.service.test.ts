@@ -121,6 +121,15 @@ describe("checkoutSessionService", () => {
       CURRENT_DATE,
     );
 
+    expect(paymentProvider.createCheckoutSession).toHaveBeenCalledWith(
+      expect.objectContaining({
+        cancelUrl:
+          `http://localhost:3000/account/orders/${order.orderNumber}` +
+          "?payment=cancelled",
+      }),
+      expect.any(String),
+    );
+
     expect(result.reused).toBe(false);
 
     expect(paymentProvider.createCheckoutSession).toHaveBeenCalledWith(
@@ -201,6 +210,15 @@ describe("checkoutSessionService", () => {
       order.orderNumber,
       GUEST_TOKEN,
       CURRENT_DATE,
+    );
+
+    expect(paymentProvider.createCheckoutSession).toHaveBeenCalledWith(
+      expect.objectContaining({
+        cancelUrl:
+          `http://localhost:3000/order-confirmation/${order.orderNumber}` +
+          "?payment=cancelled",
+      }),
+      expect.any(String),
     );
 
     expect(recordAccess).toHaveBeenCalledWith(

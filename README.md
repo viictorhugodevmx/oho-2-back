@@ -11,7 +11,7 @@ cotizaciones autoritativas y pedidos almacenados en MongoDB.
 Etapa actual:
 
 ```text
-Pasos 0–11 completados.
+Pasos 0–12 completados.
 ```
 
 Actualmente están implementados:
@@ -191,6 +191,7 @@ docs/frontend-integration-v0.1.md
 - `docs/authentication-v0.1.md`
 - `docs/checkout-quote-v0.1.md`
 - `docs/frontend-integration-v0.1.md`
+- `docs/local-closure-v0.1.md`
 
 ## Repositorio relacionado
 
